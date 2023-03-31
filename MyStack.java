@@ -1,63 +1,66 @@
-package Module9;
-
-public class MyStack<E> {
+public class MyStack<V> {
+    private Node<V> head;
     private int size;
-    private E[] array;
 
     public MyStack() {
-        this.size = 16;
-        this.array = (E[]) new Object[size];
-    }
-    public boolean add(E e) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                array[i] = e;
-                return true;
-            }
-        }
-        return false;
-    }
-    public E remove(int index){
-        E tmp = array[index];
-        if(index<size()){
-            array[index] = null;
-            createNewArray(array);
-        }
-        return tmp;
-    }
-    private void createNewArray(E[] array) {
-        E[] mass = (E[]) new Object[array.length];
-        int j = 0;
-        for(int i = 0;i< array.length;i++){
-            mass[j] = (array[i] != null) ? array[i] : array[++i];
-            j++;
-            if (array[i] == null && i+1<size && array[i+1] == null){
-                break;
-            }
-        }
-        this.array = mass;
-    }
-    public void clear(){
-        for(int i = 0;i< array.length;i++){
-            array[i] = null;
-        }
-    }
-    public int size() {
-        int count = 0;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                return count;
-            } else count++;
-        }
-        return count;
-    }
-    public E peek(){
-        E e = array[size()-1];
-        return e;
+        this.head = null;
     }
 
-    public E pop(){
-        E e = array[size()-1];
-        return (e == null) ? null : remove(size()-1);
+    private class Node<V> {
+        private V value;
+        private Node<V> next;
+
+        private Node(V value) {
+            this.value = value;
+        }
+    }
+    
+    public int size(){
+        return size;
+    }
+
+    public void push(V value){
+        Node<V> current = head;
+        Node<V> newNode = new Node<>(value);
+        head = newNode;
+        newNode.next = current;
+        size++;
+    }
+
+    public void remove(int index) {
+        if (index < 0 || index > size() - 1){
+            System.out.println("Invalid index");
+            return;
+        }
+        Node<V> tmp = head;
+        for (int i = 0; i <= index; i++){
+            tmp = tmp.next;
+        }
+        tmp.next = tmp.next.next;
+        size--;
+    }
+
+    public void clear(){
+        head = null;
+    }
+
+    public V peek() {
+        if (head == null) {
+            System.out.println("Stack is empty");
+            return null;
+        }
+        return head.value;
+
+    }
+
+    public V pop(){
+        if(head == null){
+            System.out.println("Stack is empty");
+            return null;
+        }
+        V v = head.value;
+        head = head.next;
+        size--;
+        return v;
     }
 }
