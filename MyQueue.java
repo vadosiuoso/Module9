@@ -1,63 +1,59 @@
-package Module9;
-
-public class MyQueue<E> {
+public class MyQueue<V> {
+    private Node<V> head;
     private int size;
-    private E[] array;
 
-public MyQueue() {
-    this.size = 16;
-    this.array = (E[]) new Object[size];
-}
-    public boolean add(E e) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                array[i] = e;
-                return true;
-            }
-        }
-        return false;
+    public MyQueue() {
+        this.head = null;
     }
-    public E remove(int index){
-        E tmp = array[index];
-        if(index<size()){
-            array[index] = null;
-            createNewArray(array);
-        }
-        return tmp;
-    }
-    private void createNewArray(E[] array) {
-        E[] mass = (E[]) new Object[array.length];
-        int j = 0;
-        for(int i = 0;i< array.length;i++){
-            mass[j] = (array[i] != null) ? array[i] : array[++i];
-            j++;
-            if (array[i] == null && i+1<size && array[i+1] == null){
-                break;
-            }
-        }
-        this.array = mass;
-    }
-    public void clear(){
-        for(int i = 0;i< array.length;i++){
-            array[i] = null;
-        }
-    }
-    public int size() {
-        int count = 0;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                return count;
-            } else count++;
-        }
-        return count;
-    }
-    public E peek(){
-        E e = array[0];
-        return e;
-        }
 
-    public E poll(){
-        E e = array[0];
-        return (e == null) ? null : remove(0);
+    private class Node<V>{
+        private V value;
+        private Node<V> next;
+
+        public Node(V value) {
+            this.value = value;
+        }
+    }
+
+    public void add(V value){
+        Node<V> current = head;
+        Node<V> newNode = new Node<>(value);
+        head = newNode;
+        newNode.next = current;
+        size++;
+    }
+
+    public int size(){
+        return size;
+    }
+
+    public Object peek(){
+        Node<V> tmp = head;
+        for(int i = 0; i < size()-1; i++){
+            tmp = tmp.next;
+        }
+        return tmp.value;
+    }
+
+    public Object poll(){
+        Node<V> tmp = head;
+        for(int i = 0; i < size()-1; i++){
+            tmp = tmp.next;
+        }
+        removeLast();
+        return tmp.value;
+    }
+
+    public void cleat(){
+        head = null;
+    }
+
+    private void removeLast(){
+        Node<V> tmp = head;
+        for (int i = 0; i < size()-2; i++) {
+            tmp = tmp.next;
+        }
+        tmp.next = null;
+        size--;
     }
 }
