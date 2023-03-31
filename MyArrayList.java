@@ -1,5 +1,3 @@
-package Module9;
-
 public class MyArrayList<V> {
     private V[] array;
     private int size;
