@@ -1,110 +1,91 @@
 package Module9;
 
-import groovyjarjarantlr4.v4.misc.Graph;
-
-import java.util.LinkedList;
-
-
-public class MyLinkedList<E> {
-    private Node<E> fstNode;
-    private Node<E> lstNode;
-    private int size = 0;
+public class MyLinkedList<V>{
+    private Node<V> head;
+    private Node<V> tail;
+    private int size;
 
     public MyLinkedList(){
-        lstNode = new Node<E>(null,fstNode,null);
-        fstNode = new Node<E>(null,null,lstNode);
+        tail = new Node<V>(head, null, null);
+        head = new Node<V>(null, null, tail);
     }
-    public void add(E e){
-        Node<E> prev=lstNode;
-        prev.setCurrentElement(e);
-        lstNode = new Node<>(null, prev,null);
-        prev.setNextElement(lstNode);
-        size++;
-    }
-    public void remove(int index) {
-        if (index < 0 || index > size()) {
-            System.out.println("Invalid index");
-            return;
-        } else if (index == 0) {
-            removeFirst();
-        } else if (index == size() - 1) {
-            removeLast();
-        } else {
-            Node<E> temp = fstNode;
-            for (int i = 0; i < index-1; i++) {
-                temp = getNextElement(temp);
-            }
-            temp.nextElement = temp.nextElement.nextElement;
-            size--;
+
+    private class Node<V>{
+        private V value;
+        private Node<V> next;
+        private Node<V> previous;
+
+        public Node(Node<V> previous, V value, Node<V> next) {
+            this.previous = previous;
+            this.value = value;
+            this.next = next;
         }
-
-    }
-    public void removeLast() {
-        lstNode = lstNode.prevElement;
-        size--;
     }
 
-    public void removeFirst(){
-        fstNode = fstNode.nextElement;
-        size--;
-    }
-    public void clear(){
-        fstNode = null;
-        lstNode = null;
-        size = 0;
-    }
     public int size(){
         return size;
     }
-    public E get(int index){
-        Node<E> target = fstNode.getNextElement();
-        for (int i = 0; i < index; i++) {
-            target = getNextElement(target);
-        }
-        return target.getCurrentElement();
-    }
-    public Node<E> getNextElement(Node<E> current){
-        return current.getNextElement();
+
+    public void add(V value){
+        Node<V> lastNode = tail;
+        lastNode.value = value;
+        tail = new Node<>(lastNode, null, null);
+        lastNode.next = tail;
+        size++;
     }
 
-    public class Node<E> {
-        private E currentElement;
-        private Node<E> prevElement;
-        private Node<E> nextElement;
-
-        public Node(E currentElement, Node<E> prevElement, Node<E> nextElement){
-            this.currentElement = currentElement;
-            this.prevElement = prevElement;
-            this.nextElement = nextElement;
-        }
-
-        public void setCurrentElement(E currentElement) {
-            this.currentElement = currentElement;
-        }
-
-        public void setPrevElement(Node<E> prevElement) {
-            this.prevElement = prevElement;
-        }
-
-        public void setNextElement(Node<E> nextElement) {
-            this.nextElement = nextElement;
-        }
-
-        public E getCurrentElement() {
-            return currentElement;
-        }
-
-        public Node<E> getPrevElement() {
-            return prevElement;
-        }
-
-        public Node<E> getNextElement() {
-            return nextElement;
+    public void remove(int index){
+        if(index<0 || index>size()-1){
+            System.out.println("Invalid index");
+            return;
+        }else if(index == size()-1){
+            removeLast();
+        }else if(index == 0){
+            removeFirst();
+        }else {
+            Node<V> tmp = head;
+            for (int i = 0; i < index; i++) {
+                tmp = tmp.next;
+            }
+            tmp.next = tmp.next.next;
+            tmp.next.previous = tmp.next.previous.previous;
+            size--;
         }
     }
 
+    public void clear(){
+        head = null;
+        tail = null;
+        size = 0;
+    }
 
+    public V get(int index) {
+        try {
+            if (index < 0 || index > size() - 1) {
+                throw new Exception();
+            }
+            Node tmp = head;
+            for (int i = 0; i <= index; i++) {
+                tmp = tmp.next;
+            }
+            return (V) tmp.value;
+        } catch (Exception e) {
+            System.out.println("Invalid index");
+            return null;
+        }
+    }
 
+    private void removeFirst() {
+        head = head.next;
+        head.value = null;
+        size--;
+    }
+
+    private void removeLast() {
+        tail = tail.previous;
+        tail.value = null;
+        size--;
+    }
 }
 
 
